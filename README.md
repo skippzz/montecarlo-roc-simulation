@@ -1,4 +1,4 @@
-# roc-simulation
+# montecarlo-roc-simulation
 This repository contains code to simulate and analyze Receiver Operating Characteristic (ROC) curves for two normally distributed populations. The aim is to generate multiple populations, compute ROC curves, and plot their average with confidence intervals.
 
 Getting Started
