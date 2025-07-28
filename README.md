@@ -5,8 +5,8 @@ Getting Started
 
 Clone the repository
 
-git clone https://github.com/your-username/roc-simulation.git
-cd roc-simulation
+git clone https://github.com/your-username/montecarlo-roc-simulation.git
+cd montecarlo-roc-simulation
 
 Requirements
 
