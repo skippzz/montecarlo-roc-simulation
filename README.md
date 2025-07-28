@@ -21,41 +21,49 @@ run_simulation;
 
 View results
 
-Check the figures/ folder for the averaged ROC plot and AUC statistics.
-
 General Idea Was:
 
-s = 2;      % Std dev for healthy group (controls variability)
-m = 5;      % Mean for healthy group (baseline level)
-
-s1 = 2;     % Std dev for patient group (controls variability)
-m1 = 7;     % Mean for patient group (elevated level)
+% Parameter setup
+s = 2; m = 5;       % Std dev and mean for healthy group
+s1 = 2; m1 = 7;     % Std dev and mean for patient group
 
 % Generate random samples: 1000 individuals × 100 runs
-h = s .* randn(1000,100) + m;   % Healthy population matrix
-p = s1 .* randn(1000,100) + m1; % Patient population matrix
+h = s .* randn(1000,100) + m;   % Healthy population
+p = s1 .* randn(1000,100) + m1; % Patient population
 
-% Preallocate arrays for counting positives across thresholds
+% Prepare for ROC computation
 num_points = ((m1 + s1) - (m - s)) / 0.1 + 1;
-tp = zeros(num_points, 1); % True Positives per threshold
-fp = zeros(num_points, 1); % False Positives per threshold
+h_fp = zeros(num_points,1); % False Positives per threshold
+p_tp = zeros(num_points,1); % True Positives per threshold
 
+% Count false positives over thresholds
+idx = 1;
+for thr = (m - s):0.1:(m1 + s1)
+    h_fp(idx) = sum(h(:) > thr);
+    idx = idx + 1;
+end
+
+% Count true positives over thresholds
 i = 1;
-% Iterate threshold from (m - s) to (m1 + s1) in 0.1 steps
-for tho = m - s : 0.1 : m1 + s1
-    h_fp(i) = sum(h(:) > tho);  % Count healthy samples above threshold = FP
+for thr = (m - s):0.1:(m1 + s1)
+    p_tp(i) = sum(p(:) > thr);
     i = i + 1;
 end
 
-clear tho;
-j = 1;
-for tho = m - s : 0.1 : m1 + s1
-    p_tp(j) = sum(p(:) > tho);  % Count patient samples above threshold = TP
-    j = j + 1;
-end
-
-% Plot FP on x-axis vs TP on y-axis to form the ROC curve
+% Plot ROC curve (raw counts)
 plot(h_fp, p_tp);
 xlabel('False Positives');
 ylabel('True Positives');
 title('ROC Curve from Raw Counts');
+
+Explanation
+
+Parameter setup: Define each group's mean and variability.
+
+Data generation: Create matrices of normally distributed samples.
+
+Preallocation: Allocate arrays for counting results.
+
+FP/TP counting: Loop through thresholds to record exceedances.
+
+Plot: Visualize raw counts as an ROC curve.
