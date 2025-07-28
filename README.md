@@ -24,37 +24,41 @@ View results
 General Idea Was:
 
 % Parameter setup
-s = 2; m = 5;       % Std dev and mean for healthy group
-s1 = 2; m1 = 7;     % Std dev and mean for patient group
+s   = 2;  % Std dev for healthy group (controls variability)
+m   = 5;  % Mean for healthy group (baseline level)
+s1  = 2;  % Std dev for patient group (controls variability)
+m1  = 7;  % Mean for patient group (elevated level)
 
 % Generate random samples: 1000 individuals × 100 runs
-h = s .* randn(1000,100) + m;   % Healthy population
-p = s1 .* randn(1000,100) + m1; % Patient population
+h = s  .* randn(1000, 100) + m;   % Healthy population matrix
+p = s1 .* randn(1000, 100) + m1;  % Patient population matrix
 
-% Prepare for ROC computation
-num_points = ((m1 + s1) - (m - s)) / 0.1 + 1;
-h_fp = zeros(num_points,1); % False Positives per threshold
-p_tp = zeros(num_points,1); % True Positives per threshold
+% Define thresholds and preallocate counters
+thresholds = (m - s) : 0.1 : (m1 + s1);
+num_pts    = numel(thresholds);
+h_fp       = zeros(num_pts, 1);   % False Positives per threshold
+p_tp       = zeros(num_pts, 1);   % True Positives per threshold
 
-% Count false positives over thresholds
-idx = 1;
-for thr = (m - s):0.1:(m1 + s1)
-    h_fp(idx) = sum(h(:) > thr);
-    idx = idx + 1;
+% Count False Positives over thresholds
+for idx = 1:num_pts
+    thr        = thresholds(idx);
+    h_fp(idx)  = sum(h(:) > thr);
 end
 
-% Count true positives over thresholds
-i = 1;
-for thr = (m - s):0.1:(m1 + s1)
-    p_tp(i) = sum(p(:) > thr);
-    i = i + 1;
+% Count True Positives over thresholds
+for idx = 1:num_pts
+    thr        = thresholds(idx);
+    p_tp(idx)  = sum(p(:) > thr);
 end
 
 % Plot ROC curve (raw counts)
-plot(h_fp, p_tp);
+figure;
+plot(h_fp, p_tp, 'LineWidth', 2);
 xlabel('False Positives');
 ylabel('True Positives');
 title('ROC Curve from Raw Counts');
+grid on;
+
 
 Explanation
 
