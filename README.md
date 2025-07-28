@@ -22,71 +22,41 @@ run_simulation;
 View results
 
 General Idea Was:
+## MATLAB Original Snippet Explained
 
+Here’s the core loop, cleanly fenced so GitHub will render it as code:
+
+```matlab
 % Parameter setup
-s   = 2;  % Std dev for healthy group (controls variability)
+s   = 2;  % Std dev for healthy group
+m   = 5;  % Mean for healthy group
+s1  = 2;  % Std dev for patient group
+m1  = 7;  % Mean for patient group
 
-m   = 5;  % Mean for healthy group (baseline level)
+% Generate random samples
+h = s  .* randn(1000, 100) + m;
+p = s1 .* randn(1000, 100) + m1;
 
-s1  = 2;  % Std dev for patient group (controls variability)
-
-m1  = 7;  % Mean for patient group (elevated level)
-
-
-% Generate random samples: 1000 individuals × 100 runs
-
-h = s  .* randn(1000, 100) + m;   % Healthy population matrix
-
-p = s1 .* randn(1000, 100) + m1;  % Patient population matrix
-
-
-% Define thresholds and preallocate counters
-
+% Define thresholds
 thresholds = (m - s) : 0.1 : (m1 + s1);
-
 num_pts    = numel(thresholds);
+h_fp       = zeros(num_pts, 1);
+p_tp       = zeros(num_pts, 1);
 
-h_fp       = zeros(num_pts, 1);   % False Positives per threshold
-
-p_tp       = zeros(num_pts, 1);   % True Positives per threshold
-
-
-% Count False Positives over thresholds
-
+% Count FPs & TPs
 for idx = 1:num_pts
-
-    thr        = thresholds(idx);
-    
-    h_fp(idx)  = sum(h(:) > thr);
-    
+  thr       = thresholds(idx);
+  h_fp(idx) = sum(h(:) > thr);
+  p_tp(idx) = sum(p(:) > thr);
 end
 
-
-% Count True Positives over thresholds
-
-for idx = 1:num_pts
-
-    thr        = thresholds(idx);
-    
-    p_tp(idx)  = sum(p(:) > thr);
-    
-end
-
-
-% Plot ROC curve (raw counts)
-
+% Plot ROC curve
 figure;
-
 plot(h_fp, p_tp, 'LineWidth', 2);
-
 xlabel('False Positives');
-
 ylabel('True Positives');
-
 title('ROC Curve from Raw Counts');
-
 grid on;
-
 
 
 Explanation
