@@ -22,9 +22,7 @@ run_simulation;
 View results
 
 General Idea Was:
-## MATLAB Original Snippet Explained
 
-Here’s the core loop, cleanly fenced so GitHub will render it as code:
 
 ```matlab
 % Parameter setup
