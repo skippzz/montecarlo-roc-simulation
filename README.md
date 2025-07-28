@@ -23,7 +23,7 @@ View results
 
 Check the figures/ folder for the averaged ROC plot and AUC statistics.
 
-General idea was the following
+General Idea Was:
 
 s = 2;      % Std dev for healthy group (controls variability)
 m = 5;      % Mean for healthy group (baseline level)
