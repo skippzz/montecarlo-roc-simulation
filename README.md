@@ -25,39 +25,68 @@ General Idea Was:
 
 % Parameter setup
 s   = 2;  % Std dev for healthy group (controls variability)
+
 m   = 5;  % Mean for healthy group (baseline level)
+
 s1  = 2;  % Std dev for patient group (controls variability)
+
 m1  = 7;  % Mean for patient group (elevated level)
 
+
 % Generate random samples: 1000 individuals × 100 runs
+
 h = s  .* randn(1000, 100) + m;   % Healthy population matrix
+
 p = s1 .* randn(1000, 100) + m1;  % Patient population matrix
 
+
 % Define thresholds and preallocate counters
+
 thresholds = (m - s) : 0.1 : (m1 + s1);
+
 num_pts    = numel(thresholds);
+
 h_fp       = zeros(num_pts, 1);   % False Positives per threshold
+
 p_tp       = zeros(num_pts, 1);   % True Positives per threshold
 
+
 % Count False Positives over thresholds
+
 for idx = 1:num_pts
+
     thr        = thresholds(idx);
+    
     h_fp(idx)  = sum(h(:) > thr);
+    
 end
+
 
 % Count True Positives over thresholds
+
 for idx = 1:num_pts
+
     thr        = thresholds(idx);
+    
     p_tp(idx)  = sum(p(:) > thr);
+    
 end
 
+
 % Plot ROC curve (raw counts)
+
 figure;
+
 plot(h_fp, p_tp, 'LineWidth', 2);
+
 xlabel('False Positives');
+
 ylabel('True Positives');
+
 title('ROC Curve from Raw Counts');
+
 grid on;
+
 
 
 Explanation
